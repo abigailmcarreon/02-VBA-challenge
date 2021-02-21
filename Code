@@ -1,0 +1,64 @@
+Sub stockdata():
+
+Dim Ticker As String
+Dim TotalVolume As Double
+Dim YearlyChange As Double
+Dim PercentChange As Double
+Dim Header As Integer
+Dim OpeningPrice As Double
+Dim ClosingPrice As Double
+
+For Each ws In Worksheets
+    
+    Header = 2
+    TotalVolume = 0
+
+    LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+    OpeningPrice = ws.Cells(2, 3)
+    For i = 2 To LastRow
+        
+        If ws.Cells(i + 1, 1) <> ws.Cells(i, 1) Then
+            Ticker = ws.Cells(i, 1)
+            TotalVolume = TotalVolume + ws.Cells(i, 7)
+        
+            ClosingPrice = ws.Cells(i, 6)
+           
+            YearlyChange = ClosingPrice - OpeningPrice
+            
+            If OpeningPrice = 0 Then
+                PercentChange = 0
+            Else
+                PercentChange = YearlyChange / OpeningPrice * 100
+           End If
+            
+            ws.Range("I" & Header).Value = Ticker
+            ws.Range("J" & Header).Value = YearlyChange
+            ws.Range("K" & Header).Value = (PercentChange & "%")
+            ws.Range("L" & Header).Value = TotalVolume
+         
+             
+            TotalVolume = 0
+            OpeningPrice = ws.Cells(i + 1, 3)
+           
+            If ws.Range("J" & Header).Value >= 0 Then
+                  ws.Range("J" & Header).Interior.ColorIndex = 4
+            
+            Else
+            
+                ws.Range("J" & Header).Interior.ColorIndex = 3
+            
+                End If
+            
+                Header = Header + 1
+        Else
+            TotalVolume = TotalVolume + ws.Cells(i, 7)
+           
+
+        End If
+        
+   Next i
+     
+Next ws
+
+End Sub
